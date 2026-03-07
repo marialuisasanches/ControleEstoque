@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.util.List;
+
 /**
  *
  * @author Pedro
@@ -13,6 +15,7 @@ public class Empresa {
     private String nome ;
     private String cnpj;
     private String telefone;
+    private List<Produto> produtos;
     
     public Empresa(){}
     
