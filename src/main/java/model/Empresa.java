@@ -15,7 +15,6 @@ public class Empresa {
     private String nome ;
     private String cnpj;
     private String telefone;
-    private List<Produto> produtos;
     
     public Empresa(){}
     
