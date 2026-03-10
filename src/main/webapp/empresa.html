@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Varela&display=swap"
+      rel="stylesheet"
+    />
+    <title>Produto</title>
+  </head>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #dfd9e4;
+      font-family: "Roboto", sans-serif;
+      background-image: url(./images/fundo.png);
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #260940;
+    }
+
+    img {
+      width: 150px;
+      height: auto;
+      padding: 1rem;
+      filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.8));
+    }
+
+    main {
+      color: #dfd9e4;
+      min-height: 75vh;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      gap: 6rem;
+    }
+
+    .container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 200px;
+      height: 77vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      padding: 20px;
+      background-color: #260940;
+    }
+
+    .sidebar p {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      width: 200px;
+      text-align: center;
+      padding: 1rem;
+      border-radius: 5px;
+    }
+
+    .sidebar p:last-child:hover {
+      background-color: #ac0d0d;
+      border: 1px solid #ac0d0d;
+      transform: scale(1.1);
+      width: 200px;
+      text-align: center;
+    }
+
+    .sidebar p:hover {
+      background-color: #5d00ae;
+      border: 1px solid #5d00ae;
+      transform: scale(1.1);
+      width: 200px;
+      text-align: center;
+    }
+
+    .meio {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    table {
+      border-collapse: collapse;
+      width: 50%;
+      margin: 2rem auto;
+      background-color: rgba(38, 9, 64, 0.6);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      align-self: flex-start;
+      text-align: center;
+    }
+
+    th {
+      background-color: #5d00ae;
+      color: #dfd9e4;
+      padding: 12px 20px;
+      text-align: left;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    td {
+      padding: 12px 20px;
+      color: #dfd9e4;
+      border-bottom: 1px solid rgba(93, 0, 174, 0.3);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: rgba(93, 0, 174, 0.25);
+      transition: background-color 0.2s ease;
+    }
+
+    footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background-color: #260940;
+      color: #e4e1d9;
+      padding: 1rem;
+    }
+  </style>
+
+  <body>
+    <header>
+      <img src="./images/ControleDeEstoqueIMG.png" />
+    </header>
+    <main>
+      <div class="meio">
+        <section class="container">
+          <nav class="sidebar">
+            <p>Adicionar</p>
+            <p>Editar</p>
+            <p>Excluir</p>
+          </nav>
+        </section>
+
+        <table border="1">
+          <tr>
+            <th>Produtos</th>
+          </tr>
+          <tr>
+            <td>x</td>
+          </tr>
+        </table>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2026</p>
+    </footer>
+  </body>
+</html>
