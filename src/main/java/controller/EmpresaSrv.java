@@ -19,17 +19,16 @@ public class EmpresaSrv extends HttpServlet{
             throws ServletException, IOException {
                 response.setContentType("text/html;charset=UTF-8");
                 
-                try{
+                /*try{
                     
                     //implementar depois
-                    /*
+                    
                     String acao = request.getParameter("acao");
                     
                     String id = request.getParameter("id");
                     String nome = request.getParameter("nome");
                     String cnpj = request.getParameter("cnpj");
                     String telefone = request.getParameter("telefone");
-                    */
                     
                     switch(acao){
                         case "inclusao":
@@ -46,6 +45,6 @@ public class EmpresaSrv extends HttpServlet{
                     
                 } catch(Exception e){
                     System.out.println("Erro ===> "+ e.getMessage());
-                }
+                }*/
             }
 }

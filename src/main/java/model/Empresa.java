@@ -11,17 +11,27 @@ import java.util.List;
  * @author Pedro
  */
 public class Empresa {
+
     private int id;
-    private String nome ;
+    private String nome;
     private String cnpj;
     private String telefone;
-    
-    public Empresa(){}
-    
-    public Empresa(String nome, String cnpj, String telefone){
+
+    public Empresa() {
+    }
+
+    public Empresa(String nome, String cnpj, String telefone) {
         this.nome = nome;
         this.cnpj = cnpj;
         this.telefone = telefone;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -47,9 +57,9 @@ public class Empresa {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
-    
+
     @Override
-    public String toString(){
-        return id + " | "+ nome + " | "+ cnpj + " | "+ telefone;
+    public String toString() {
+        return id + " | " + nome + " | " + cnpj + " | " + telefone;
     }
 }
