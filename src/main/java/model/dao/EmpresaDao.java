@@ -58,7 +58,6 @@ public class EmpresaDao implements InterfaceDao<Empresa> {
         try {
             em.getTransaction().begin();
             p1 = em.find(Empresa.class, id);
-            em.remove(p1);
             em.getTransaction().commit();
         } finally {
             em.close();

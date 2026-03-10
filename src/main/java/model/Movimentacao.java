@@ -16,14 +16,24 @@ public class Movimentacao {
     private Date data;
     private String observacao;
     private Produto produtoMovimento;
+    private TipoMovimentacao tipo;
     
     public Movimentacao(){}
 
-    public Movimentacao(int qtd, Date data, String observacao, Produto produtoMovimento) {
+    public Movimentacao(int qtd, Date data, String observacao, Produto produtoMovimento, TipoMovimentacao tipo) {
         this.qtd = qtd;
         this.data = data;
         this.observacao = observacao;
         this.produtoMovimento = produtoMovimento;
+        this.tipo = tipo;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getQtd() {
@@ -58,10 +68,16 @@ public class Movimentacao {
         this.produtoMovimento = produtoMovimento;
     }
 
+    public TipoMovimentacao getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoMovimentacao tipo) {
+        this.tipo = tipo;
+    }
+
     @Override
     public String toString() {
-        return id + " | " + qtd + " | "+ data + " | " + observacao + " | " + produtoMovimento;
+        return id + " | " + qtd + " | "+ data + " | " + observacao + " | " + produtoMovimento + " | " + tipo;
     }
-    
-    
 }
