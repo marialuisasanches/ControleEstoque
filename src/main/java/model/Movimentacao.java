@@ -4,18 +4,41 @@
  */
 package model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import java.util.Date;
 
 /**
  *
  * @author Pedro
  */
+
+@Entity
 public class Movimentacao {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    
     private int qtd;
+    
+    @Temporal(TemporalType.DATE)
     private Date data;
+    
     private String observacao;
+    
+    @ManyToOne
+    @JoinColumn(name = "produto_id")
     private Produto produtoMovimento;
+    
+    @Enumerated(EnumType.STRING)
     private TipoMovimentacao tipo;
     
     public Movimentacao(){}

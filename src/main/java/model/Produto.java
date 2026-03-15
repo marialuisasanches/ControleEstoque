@@ -4,15 +4,30 @@
  */
 package model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 /**
  *
  * @author Pedro
  */
+
+@Entity
 public class Produto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    
     private String nome;
     private double preco;
     private int estoque;
+    
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
     private Empresa empresa;
     
     public Produto(){}

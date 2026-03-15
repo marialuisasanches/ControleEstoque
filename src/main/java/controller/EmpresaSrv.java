@@ -6,6 +6,7 @@ package controller;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import model.dao.InterfaceDao;
  *
  * @author Pedro
  */
+@WebServlet("/empresa")
 public class EmpresaSrv extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -26,8 +28,12 @@ public class EmpresaSrv extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         try {
-            // corrigir depois
+
             String acao = request.getParameter("acao");
+
+            if (acao == null) {
+                acao = "listagem";
+            }
 
             String id = request.getParameter("id");
             String nome = request.getParameter("nome");
@@ -36,64 +42,72 @@ public class EmpresaSrv extends HttpServlet {
 
             InterfaceDao dao = new EmpresaDao();
             RequestDispatcher rd;
+
             Empresa e1 = null;
-            
-            // corrigir depois
+
             switch (acao) {
+
                 case "inclusao":
-                    e1 = new Empresa(nome, cnpj, telefone);
-                    try {
-                        dao.incluir(e1);
-                        // corrigir depois
-                        rd = request.getRequestDispatcher("index.html");
-                        rd.forward(request, response);
-                    } catch (Exception e) {
-                        System.out.println("Erro ===> " + e.getMessage());
-                    }
+
+                    e1 = new Empresa();
+                    e1.setNome(nome);
+                    e1.setCnpj(cnpj);
+                    e1.setTelefone(telefone);
+
+                    dao.incluir(e1);
+
+                    rd = request.getRequestDispatcher("empresa?acao=listagem");
+                    rd.forward(request, response);
+
                     break;
 
                 case "edicao":
-                    e1 = new Empresa(nome, cnpj, telefone);
+
+                    e1 = new Empresa();
+
                     e1.setId(Integer.parseInt(id));
-                    try {
-                        dao.editar(e1);
-                        List<Empresa> lista = dao.listar();
-                        request.setAttribute("lista", lista);
-                        // rd = request.getRequestDispatcher(); // implementar
-                        //rd.forward(request, response);
-                    } catch (Exception e) {
-                        System.out.println("Erro ===> " + e.getMessage());
-                    }
+                    e1.setNome(nome);
+                    e1.setCnpj(cnpj);
+                    e1.setTelefone(telefone);
+
+                    dao.editar(e1);
+
+                    List<Empresa> listaEdit = dao.listar();
+                    request.setAttribute("listagem", listaEdit);
+
+                    rd = request.getRequestDispatcher("empresa.jsp");
+                    rd.forward(request, response);
+
                     break;
-                
+
                 case "exclusao":
-                    try{
-                        e1 = new Empresa(nome, cnpj, telefone);
-                        e1.setId(Integer.parseInt(id));
-                        dao.excluir(e1);
-                        
-                        List<Empresa> lista = dao.listar();
-                        request.setAttribute("lista", lista);
-                        //rd = request.getRequestDispatcher(); // implementar
-                        //rd.forward(request, response);
-                    }catch (Exception e){
-                        System.out.println("Erro ===> "+ e.getMessage());
-                    }
+
+                    e1 = new Empresa();
+                    e1.setId(Integer.parseInt(id));
+
+                    dao.excluir(e1);
+
+                    List<Empresa> listaExc = dao.listar();
+                    request.setAttribute("listagem", listaExc);
+
+                    rd = request.getRequestDispatcher("empresa.jsp");
+                    rd.forward(request, response);
+
                     break;
-                    
+
                 case "listagem":
-                    try{
-                        List<Empresa> lista = dao.listar();
-                        request.setAttribute("listagem", lista);
-                        //rd = request.getRequestDispatcher(); // implememtar
-                        //rd.forward(request, response);
-                    }catch (Exception e){
-                        System.out.println("Erro ===> "+ e.getMessage());
-                    }
+
+                    List<Empresa> lista = dao.listar();
+                    System.out.println("Tamanho da lista: " + lista.size());
+                    request.setAttribute("listagem", lista);
+
+                    rd = request.getRequestDispatcher("empresa.jsp");
+                    rd.forward(request, response);
+
                     break;
-                    
+
                 default:
-                    System.out.println("Erro na variável acao. "+ acao);
+                    System.out.println("Erro na variável acao: " + acao);
                     break;
             }
 
@@ -101,4 +115,43 @@ public class EmpresaSrv extends HttpServlet {
             System.out.println("Erro ===> " + e.getMessage());
         }
     }
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
 }

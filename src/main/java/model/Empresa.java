@@ -4,18 +4,30 @@
  */
 package model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.util.List;
 
 /**
  *
  * @author Pedro
  */
+@Entity
 public class Empresa {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String nome;
     private String cnpj;
     private String telefone;
+
+    @OneToMany(mappedBy = "empresa")
+    private List<Produto> produtos;
 
     public Empresa() {
     }
