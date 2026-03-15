@@ -155,43 +155,72 @@
         <main>
             <div class="meio">
                 <section class="container">
+                    <form action="produto" method="GET"> <input type="hidden" name="acao" value="pesquisa">
+                        <label>Buscar por Empresa:</label>
+                        <input type="text" name="busca" placeholder="Nome da empresa...">
+                        <button type="submit">Buscar</button>
+                        <a href="produto?acao=listagem">Limpar</a>
+                    </form>
                     <nav class="sidebar">
+                        <a href="index.html">Inicio</a>
                         <form action="produto" method="POST">
-                            <input type="hidden" name="acao" value="inclusao">
+                            <input type="hidden" name="acao" value="${empty produtoEditando ? 'inclusao' : 'edicao'}">
+                            <input type="hidden" name="id" value="${produtoEditando.id}">
 
                             <label>Nome do Produto:</label><br>
-                            <input type="text" name="nome" required><br><br>
+                            <input type="text" name="nome" value="${produtoEditando.nome}" required><br><br>
 
                             <label>Preço:</label><br>
-                            <input type="number" step="0.01" name="preco" required><br><br>
+                            <input type="number" step="0.01" name="preco" value="${produtoEditando.preco}" required><br><br>
 
                             <label>Quantidade em Estoque:</label><br>
-                            <input type="number" name="estoque" required><br><br>
+                            <input type="number" name="estoque" value="${produtoEditando.estoque}" required><br><br>
 
                             <label>Empresa Responsável:</label><br>
                             <select name="empresa" required>
                                 <option value="">Selecione uma empresa...</option>
                                 <c:forEach var="emp" items="${empresasDisponiveis}">
-                                    <option value="${emp.id}">${emp.nome}</option>
+                                    <option value="${emp.id}" ${emp.id == produtoEditando.empresa.id ? 'selected' : ''}>
+                                        ${emp.nome}
+                                    </option>
                                 </c:forEach>
                             </select><br><br>
 
-                            <button type="submit">Cadastrar Produto</button>
+                            <button type="submit">${empty produtoEditando ? 'Cadastrar Produto' : 'Salvar Alterações'}</button>
+
+                            <c:if test="${not empty produtoEditando}">
+                                <a href="produto?acao=listagem" style="color: #ff5252; text-decoration: none;">Cancelar</a>
+                            </c:if>
                         </form>
                     </nav>
                 </section>
 
                 <table border="1">
-                    <tr>
-                        <th>Produtos</th>
-                    </tr>
-
-                    <c:forEach var="produto" items="${listagem}">
+                    <thead>
                         <tr>
-                            <td>${produto.nome}</td>
+                            <th>Nome</th>
+                            <th>Preço</th>
+                            <th>Estoque</th>
+                            <th>Empresa</th>
+                            <th colspan="2">Ações</th>
                         </tr>
-                    </c:forEach>
-
+                    </thead>
+                    <tbody>
+                        <c:forEach var="produto" items="${listagem}">
+                            <tr>
+                                <td>${produto.nome}</td>
+                                <td>${produto.preco}</td>
+                                <td>${produto.estoque}</td>
+                                <td>${produto.empresa.nome}</td>
+                                <td><a href="produto?acao=pre-edicao&id=${produto.id}" style="color: #00bcd4;">Editar</a></td>
+                                <td>
+                                    <a href="produto?acao=exclusao&id=${produto.id}" 
+                                       style="color: #ff5252;" 
+                                       onclick="return confirm('Deseja excluir?')">Excluir</a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
                 </table>
 
 

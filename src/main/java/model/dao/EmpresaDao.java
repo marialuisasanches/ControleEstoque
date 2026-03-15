@@ -7,6 +7,7 @@ package model.dao;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import model.Empresa;
+import static model.dao.ConnFactory.getEntityManager;
 
 /**
  *
@@ -77,5 +78,12 @@ public class EmpresaDao implements InterfaceDao<Empresa> {
             em.close();
         }
         return lista;
+    }
+
+    public List<Empresa> pesquisarPorNome(String nome) {
+        EntityManager em = getEntityManager();
+        return em.createQuery("SELECT e FROM Empresa e WHERE e.nome LIKE :n", Empresa.class)
+                .setParameter("n", "%" + nome + "%")
+                .getResultList();
     }
 }

@@ -4,33 +4,40 @@
  */
 package model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.List;
 
 /**
  *
  * @author Pedro
  */
-
 @Entity
 public class Produto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     private String nome;
     private double preco;
     private int estoque;
-    
+
     @ManyToOne
     @JoinColumn(name = "empresa_id")
     private Empresa empresa;
-    
-    public Produto(){}
+
+    @OneToMany(mappedBy = "produtoMovimento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Movimentacao> movimentacoes;
+
+    public Produto() {
+    }
 
     public Produto(String nome, double preco, int estoque, Empresa empresa) {
         this.nome = nome;
@@ -78,9 +85,17 @@ public class Produto {
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
-    
+
+    public List<Movimentacao> getMovimentacoes() {
+        return movimentacoes;
+    }
+
+    public void setMovimentacoes(List<Movimentacao> movimentacoes) {
+        this.movimentacoes = movimentacoes;
+    }
+
     @Override
-    public String toString(){
-        return id + " | "+ nome + " | "+ preco + " | "+ estoque + " | " + empresa;
+    public String toString() {
+        return nome + " (Estoque: " + estoque + ")";
     }
 }

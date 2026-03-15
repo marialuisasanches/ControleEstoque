@@ -12,69 +12,81 @@ import model.Movimentacao;
  *
  * @author Pedro
  */
-public class MovimentacaoDao implements InterfaceDao<Movimentacao>{
+public class MovimentacaoDao implements InterfaceDao<Movimentacao> {
+
     @Override
-    public void incluir(Movimentacao entidade)throws Exception{
+    public void incluir(Movimentacao entidade) throws Exception {
         EntityManager em = ConnFactory.getEntityManager();
-        try{
+        try {
             em.getTransaction().begin();
             em.persist(entidade);
             em.getTransaction().commit();
-        }finally{
+        } finally {
             em.close();
         }
     }
-    
+
     @Override
-    public void editar(Movimentacao entidade) throws Exception{
+    public void editar(Movimentacao entidade) throws Exception {
         EntityManager em = ConnFactory.getEntityManager();
-        try{
+        try {
             em.getTransaction().begin();
             em.merge(entidade);
             em.getTransaction().commit();
-        }finally{
+        } finally {
             em.close();
         }
     }
-    
+
     @Override
-    public void excluir(Movimentacao entidade) throws Exception{
+    public void excluir(Movimentacao entidade) throws Exception {
         EntityManager em = ConnFactory.getEntityManager();
-        try{
+        try {
             em.getTransaction().begin();
             Movimentacao m1 = em.find(Movimentacao.class, entidade.getId());
             em.remove(m1);
             em.getTransaction().commit();
-        }finally{
+        } finally {
             em.close();
         }
     }
-    
+
     @Override
-    public Movimentacao pesquisarPorId(int id) throws Exception{
+    public Movimentacao pesquisarPorId(int id) throws Exception {
         Movimentacao m1 = null;
         EntityManager em = ConnFactory.getEntityManager();
-        try{
+        try {
             em.getTransaction().begin();
             m1 = em.find(Movimentacao.class, id);
             em.getTransaction().commit();
-        }finally{
+        } finally {
             em.close();
         }
         return m1;
     }
-    
+
     @Override
-    public List<Movimentacao> listar() throws Exception{
+    public List<Movimentacao> listar() throws Exception {
         List<Movimentacao> lista = null;
         EntityManager em = ConnFactory.getEntityManager();
-        try{
+        try {
             em.getTransaction().begin();
             lista = em.createQuery("FROM Movimentacao p").getResultList();
             em.getTransaction().commit();
-        }finally{
+        } finally {
             em.close();
         }
         return lista;
+    }
+
+    public List<Movimentacao> pesquisarPorEmpresa(String nomeEmpresa) {
+        EntityManager em = ConnFactory.getEntityManager();
+        try {
+            return em.createQuery("SELECT m FROM Movimentacao m WHERE m.produtoMovimento.empresa.nome LIKE :n", Movimentacao.class)
+                    .setParameter("n", "%" + nomeEmpresa + "%")
+                    .getResultList();
+        } finally {
+            em.close();
+        }
     }
 }

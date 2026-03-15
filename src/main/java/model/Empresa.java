@@ -4,6 +4,7 @@
  */
 package model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,7 +27,7 @@ public class Empresa {
     private String cnpj;
     private String telefone;
 
-    @OneToMany(mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Produto> produtos;
 
     public Empresa() {
@@ -70,8 +71,16 @@ public class Empresa {
         this.telefone = telefone;
     }
 
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
+    }
+
     @Override
     public String toString() {
-        return id + " | " + nome + " | " + cnpj + " | " + telefone;
+        return nome;
     }
 }

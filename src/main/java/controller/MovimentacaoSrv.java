@@ -19,6 +19,7 @@ import model.Produto;
 import model.TipoMovimentacao;
 import model.dao.InterfaceDao;
 import model.dao.MovimentacaoDao;
+import model.dao.ProdutoDao;
 
 /**
  *
@@ -68,58 +69,88 @@ public class MovimentacaoSrv extends HttpServlet {
                     tipoMov = TipoMovimentacao.valueOf(tipo);
                     m1.setTipo(tipoMov);
 
-                    p1 = new Produto();
-                    p1.setId(Integer.parseInt(produto));
+                    model.dao.ProdutoDao pDao = new model.dao.ProdutoDao();
+                    p1 = pDao.pesquisarPorId(Integer.parseInt(produto));
+
+                    if (tipoMov == TipoMovimentacao.ENTRADA) {
+                        p1.setEstoque(p1.getEstoque() + m1.getQtd());
+                    } else {
+                        p1.setEstoque(p1.getEstoque() - m1.getQtd());
+                    }
+
+                    m1.setSaldoMomento(p1.getEstoque());
                     m1.setProdutoMovimento(p1);
 
                     dao.incluir(m1);
+                    pDao.editar(p1);
 
-                    rd = request.getRequestDispatcher("index.html");
+                    rd = request.getRequestDispatcher("movimentacao?acao=listagem");
                     rd.forward(request, response);
 
+                    break;
+
+                case "pre-edicao":
+                    String idPre = request.getParameter("id");
+                    Movimentacao mPre = (Movimentacao) dao.pesquisarPorId(Integer.parseInt(idPre));
+                    request.setAttribute("movEditando", mPre);
+
+                    request.setAttribute("produtosDisponiveis", new ProdutoDao().listar());
+
+                    rd = request.getRequestDispatcher("movimentacao.jsp");
+                    rd.forward(request, response);
                     break;
 
                 case "edicao":
                     dataMov = sdf.parse(data);
 
-                    m1 = new Movimentacao();
+                    Movimentacao movAntiga = (Movimentacao) dao.pesquisarPorId(Integer.parseInt(id));
+                    int qtdAntiga = movAntiga.getQtd();
+                    TipoMovimentacao tipoAntigo = movAntiga.getTipo();
 
-                    m1.setId(Integer.parseInt(id));
-                    m1.setQtd(Integer.parseInt(qtd));
-                    m1.setObservacao(observacao);
-                    m1.setData(dataMov);
+                    model.dao.ProdutoDao pDaoEd = new model.dao.ProdutoDao();
+                    p1 = pDaoEd.pesquisarPorId(Integer.parseInt(produto));
 
-                    tipoMov = TipoMovimentacao.valueOf(tipo);
-                    m1.setTipo(tipoMov);
+                    if (tipoAntigo == TipoMovimentacao.ENTRADA) {
+                        p1.setEstoque(p1.getEstoque() - qtdAntiga);
+                    } else {
+                        p1.setEstoque(p1.getEstoque() + qtdAntiga);
+                    }
 
-                    p1 = new Produto();
-                    p1.setId(Integer.parseInt(produto));
+                    int qtdNova = Integer.parseInt(qtd);
+                    TipoMovimentacao tipoNovo = TipoMovimentacao.valueOf(tipo);
 
-                    m1.setProdutoMovimento(p1);
+                    if (tipoNovo == TipoMovimentacao.ENTRADA) {
+                        p1.setEstoque(p1.getEstoque() + qtdNova);
+                    } else {
+                        p1.setEstoque(p1.getEstoque() - qtdNova);
+                    }
 
-                    dao.editar(m1);
+                    movAntiga.setQtd(qtdNova);
+                    movAntiga.setTipo(tipoNovo);
+                    movAntiga.setData(dataMov);
+                    movAntiga.setObservacao(observacao);
+                    movAntiga.setProdutoMovimento(p1);
 
-                    List<Movimentacao> listaEdit = dao.listar();
-                    request.setAttribute("listagem", listaEdit);
+                    movAntiga.setSaldoMomento(p1.getEstoque());
 
+                    dao.editar(movAntiga);
+                    pDaoEd.editar(p1);
+
+                    request.setAttribute("listagem", dao.listar());
+                    request.setAttribute("produtosDisponiveis", pDaoEd.listar());
                     rd = request.getRequestDispatcher("movimentacao.jsp");
                     rd.forward(request, response);
-
                     break;
 
                 case "exclusao":
-
-                    m1 = new Movimentacao();
-                    m1.setId(Integer.parseInt(id));
-
+                    m1 = (Movimentacao) dao.pesquisarPorId(Integer.parseInt(id));
                     dao.excluir(m1);
 
-                    List<Movimentacao> listaExc = dao.listar();
-                    request.setAttribute("listagem", listaExc);
+                    request.setAttribute("listagem", dao.listar());
+                    request.setAttribute("produtosDisponiveis", new ProdutoDao().listar());
 
                     rd = request.getRequestDispatcher("movimentacao.jsp");
                     rd.forward(request, response);
-
                     break;
 
                 case "listagem":
@@ -127,9 +158,26 @@ public class MovimentacaoSrv extends HttpServlet {
                     List<Movimentacao> lista = dao.listar();
                     request.setAttribute("listagem", lista);
 
+                    List<Produto> listaProdutos = new ProdutoDao().listar();
+                    request.setAttribute("produtosDisponiveis", listaProdutos);
+
                     rd = request.getRequestDispatcher("movimentacao.jsp");
                     rd.forward(request, response);
 
+                    break;
+
+                case "pesquisa":
+                    String buscaMov = request.getParameter("busca");
+
+                    model.dao.MovimentacaoDao mDaoBusca = new model.dao.MovimentacaoDao();
+                    List<Movimentacao> resultado = mDaoBusca.pesquisarPorEmpresa(buscaMov);
+
+                    request.setAttribute("listagem", resultado);
+
+                    request.setAttribute("produtosDisponiveis", new model.dao.ProdutoDao().listar());
+
+                    rd = request.getRequestDispatcher("movimentacao.jsp");
+                    rd.forward(request, response);
                     break;
 
                 default:

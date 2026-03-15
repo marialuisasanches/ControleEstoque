@@ -157,29 +157,57 @@
             <div class="meio">
 
                 <section class="container">
-                    <nav class="sidebar">
-                        <form action="movimentacao" method="POST">
-                            <input type="hidden" name="acao" value="inclusao">
+                    <div style="display: flex; flex-direction: column; width: 100%;">
+                        <form action="movimentacao" method="GET" style="margin: 2rem auto 0 auto; background: rgba(38, 9, 64, 0.6); padding: 15px; border-radius: 10px; width: 60%; display: flex; gap: 10px; align-items: center; justify-content: center;">
+                            <input type="hidden" name="acao" value="pesquisa">
+                            <label style="color: white;">Filtrar por Empresa:</label>
+                            <input type="text" name="busca" placeholder="Nome da empresa..." style="padding: 5px; border-radius: 4px; border: none; width: 200px;">
+                            <button type="submit" style="background-color: #5d00ae; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer;">Filtrar</button>
+                            <a href="movimentacao?acao=listagem" style="color: #dfd9e4; text-decoration: none; font-size: 0.8rem;">Limpar</a>
+                        </form>
 
-                            <label>Produto (ID):</label>
-                            <input type="number" name="produtoMovimento" required placeholder="ID do Produto">
+                        <table>
+                        </table>
+                    </div>
+                    <nav class="sidebar">
+                        <a href="index.html">Inicio</a>
+                        <form action="movimentacao" method="POST">
+                            <input type="hidden" name="acao" value="${movEditando != null ? 'edicao' : 'inclusao'}">
+
+                            <c:if test="${movEditando != null}">
+                                <input type="hidden" name="id" value="${movEditando.id}">
+                            </c:if>
+
+                            <label>Produto:</label>
+                            <select name="produtoMovimento" required>
+                                <option value="">Selecione...</option>
+                                <c:forEach var="p" items="${produtosDisponiveis}">
+                                    <option value="${p.id}" ${movEditando.produtoMovimento.id == p.id ? 'selected' : ''}>
+                                        ${p.nome} (Saldo: ${p.estoque})
+                                    </option>
+                                </c:forEach>
+                            </select>
 
                             <label>Quantidade:</label>
-                            <input type="number" name="qtd" required>
+                            <input type="number" name="qtd" value="${movEditando.qtd}" required>
 
                             <label>Tipo:</label>
                             <select name="tipo">
-                                <option value="ENTRADA">Entrada</option>
-                                <option value="SAIDA">Saída</option>
+                                <option value="ENTRADA" ${movEditando.tipo == 'ENTRADA' ? 'selected' : ''}>Entrada</option>
+                                <option value="SAIDA" ${movEditando.tipo == 'SAIDA' ? 'selected' : ''}>Saída</option>
                             </select>
 
                             <label>Data:</label>
-                            <input type="date" name="data" required>
+                            <input type="date" name="data" value="${movEditando.data}" required>
 
                             <label>Observação:</label>
-                            <textarea name="observacao"></textarea>
+                            <textarea name="observacao">${movEditando.observacao}</textarea>
 
-                            <button type="submit">Registrar</button>
+                            <button type="submit">${movEditando != null ? 'Salvar Alteração' : 'Registrar'}</button>
+
+                            <c:if test="${movEditando != null}">
+                                <a href="movimentacao?acao=listagem" style="color: white; display: block; margin-top: 10px;">Cancelar</a>
+                            </c:if>
                         </form>
                     </nav>
                 </section>
@@ -191,6 +219,8 @@
                         <th>Tipo</th>
                         <th>Quantidade</th>
                         <th>Data</th>
+                        <th>Quantidade Atual</th>
+                        <th>Ações</th>
                     </tr>
 
                     <c:forEach var="mov" items="${listagem}">
@@ -200,6 +230,11 @@
                             <td>${mov.tipo}</td>
                             <td>${mov.qtd}</td>
                             <td>${mov.data}</td>
+                            <td>${mov.saldoMomento}</td>
+                            <td>
+                                <a href="movimentacao?acao=pre-edicao&id=${mov.id}">Editar</a> | 
+                                <a href="movimentacao?acao=exclusao&id=${mov.id}" onclick="return confirm('Excluir?')">Excluir</a>
+                            </td>
                         </tr>
                     </c:forEach>
 

@@ -64,33 +64,38 @@ public class ProdutoSrv extends HttpServlet {
 
                     dao.incluir(p1);
 
-                    rd = request.getRequestDispatcher("index.html");
+                    rd = request.getRequestDispatcher("produto?acao=listagem");
                     rd.forward(request, response);
 
                     break;
 
+                case "pre-edicao":
+                    p1 = (Produto) dao.pesquisarPorId(Integer.parseInt(id));
+                    request.setAttribute("produtoEditando", p1);
+                    request.setAttribute("empresasDisponiveis", new model.dao.EmpresaDao().listar());
+
+                    rd = request.getRequestDispatcher("produto.jsp");
+                    rd.forward(request, response);
+                    break;
+
                 case "edicao":
+                    p1 = (Produto) dao.pesquisarPorId(Integer.parseInt(id));
 
-                    p1 = new Produto();
-
-                    p1.setId(Integer.parseInt(id));
                     p1.setNome(nome);
                     p1.setPreco(Double.parseDouble(preco));
                     p1.setEstoque(Integer.parseInt(estoque));
 
                     emp = new Empresa();
                     emp.setId(Integer.parseInt(empresa));
-
                     p1.setEmpresa(emp);
 
                     dao.editar(p1);
 
-                    List<Produto> listaEdit = dao.listar();
-                    request.setAttribute("listagem", listaEdit);
+                    request.setAttribute("listagem", dao.listar());
+                    request.setAttribute("empresasDisponiveis", new model.dao.EmpresaDao().listar());
 
                     rd = request.getRequestDispatcher("produto.jsp");
                     rd.forward(request, response);
-
                     break;
 
                 case "exclusao":
@@ -116,6 +121,17 @@ public class ProdutoSrv extends HttpServlet {
                     rd = request.getRequestDispatcher("produto.jsp");
                     rd.forward(request, response);
 
+                    break;
+
+                case "pesquisa":
+                    String busca = request.getParameter("busca");
+                    model.dao.ProdutoDao pDaoBusca = new model.dao.ProdutoDao();
+                    List<Produto> filtrados = pDaoBusca.pesquisarPorEmpresa(busca);
+
+                    request.setAttribute("listagem", filtrados);
+                    request.setAttribute("empresasDisponiveis", new model.dao.EmpresaDao().listar());
+                    rd = request.getRequestDispatcher("produto.jsp");
+                    rd.forward(request, response);
                     break;
 
                 default:

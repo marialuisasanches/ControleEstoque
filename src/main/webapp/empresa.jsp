@@ -155,35 +155,76 @@
         </header>
         <main>
             <div class="meio">
+                <form action="empresa" method="GET" style="margin: 2rem auto 0 auto; background: rgba(38, 9, 64, 0.6); padding: 15px; border-radius: 10px; width: 50%; display: flex; gap: 10px; align-items: center; justify-content: center;">
+                    <input type="hidden" name="acao" value="pesquisa">
+                    <label>Buscar Empresa:</label>
+                    <input type="text" name="busca" placeholder="Digite o nome..." style="padding: 5px; border-radius: 4px; border: none; width: 200px;">
+                    <button type="submit" style="background-color: #5d00ae; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer;">Buscar</button>
+                    <a href="empresa?acao=listagem" style="color: #dfd9e4; text-decoration: none; font-size: 0.8rem;">Limpar</a>
+                </form>
                 <section class="container">
+
                     <nav class="sidebar">
+                        <a href="index.html">Inicio</a>
                         <form action="empresa" method="POST">
-                            <input type="hidden" name="acao" value="inclusao">
+                            <input type="hidden" name="acao" value="${empty empresaEditando ? 'inclusao' : 'edicao'}">
+
+                            <c:if test="${not empty empresaEditando}">
+                                <input type="hidden" name="id" value="${empresaEditando.id}">
+                            </c:if>
 
                             <label>Nome da Empresa:</label><br>
-                            <input type="text" name="nome" required><br><br>
+                            <input type="text" name="nome" value="${empresaEditando.nome}" required><br><br>
 
                             <label>CNPJ:</label><br>
-                            <input type="text" name="cnpj" required><br><br>
+                            <input type="text" name="cnpj" value="${empresaEditando.cnpj}" required><br><br>
 
                             <label>Telefone:</label><br>
-                            <input type="text" name="telefone" required><br><br>
+                            <input type="text" name="telefone" value="${empresaEditando.telefone}" required><br><br>
 
-                            <button type="submit">Cadastrar Empresa</button>
+                            <button type="submit">
+                                ${empty empresaEditando ? 'Cadastrar Empresa' : 'Salvar Alterações'}
+                            </button>
+
+                            <c:if test="${not empty empresaEditando}">
+                                <br><br>
+                                <a href="empresa?acao=listagem" style="color: #ff5252; text-decoration: none; font-size: 0.8rem;">Cancelar Edição</a>
+                            </c:if>
                         </form>
                     </nav>
+
                 </section>
 
                 <table border="1">
-                    <tr>
-                        <th>Empresas Cadastradas</th>
-                    </tr>
-                    <c:forEach var="empresa" items="${listagem}">
+                    <thead>
                         <tr>
-                            <td>${empresa.nome}</td>
+                            <th>Nome</th>
+                            <th>CNPJ</th>
+                            <th>Telefone</th>
+                            <th colspan="2">Ações</th>
                         </tr>
-                    </c:forEach>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="empresa" items="${listagem}">
+                            <tr>
+                                <td>${empresa.nome}</td>
+                                <td>${empresa.cnpj}</td>
+                                <td>${empresa.telefone}</td>
+                                <td>
+                                    <a href="empresa?acao=pre-edicao&id=${empresa.id}" style="color: #00bcd4; text-decoration: none; font-weight: bold;">Editar</a>
+                                </td>
+                                <td>
+                                    <a href="empresa?acao=exclusao&id=${empresa.id}" 
+                                       style="color: #ff5252; text-decoration: none; font-weight: bold;"
+                                       onclick="return confirm('Deseja realmente excluir a empresa ${empresa.nome}?')">
+                                        Excluir
+                                    </a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
                 </table>
+
             </div>
         </main>
 

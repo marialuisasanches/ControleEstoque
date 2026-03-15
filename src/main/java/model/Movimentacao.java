@@ -28,6 +28,7 @@ public class Movimentacao {
     private int id;
     
     private int qtd;
+    private int saldoMomento;
     
     @Temporal(TemporalType.DATE)
     private Date data;
@@ -97,6 +98,14 @@ public class Movimentacao {
 
     public void setTipo(TipoMovimentacao tipo) {
         this.tipo = tipo;
+    }
+
+    public int getSaldoMomento() {
+        return saldoMomento;
+    }
+
+    public void setSaldoMomento(int saldoMomento) {
+        this.saldoMomento = saldoMomento;
     }
 
     @Override

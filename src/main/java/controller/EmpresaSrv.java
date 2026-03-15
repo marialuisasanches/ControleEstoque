@@ -61,15 +61,22 @@ public class EmpresaSrv extends HttpServlet {
 
                     break;
 
+                case "pre-edicao":
+                    e1 = (Empresa) dao.pesquisarPorId(Integer.parseInt(id));
+
+                    request.setAttribute("empresaEditando", e1);
+
+                    rd = request.getRequestDispatcher("empresa.jsp");
+                    rd.forward(request, response);
+
+                    break;
+
                 case "edicao":
+                    e1 = (Empresa) dao.pesquisarPorId(Integer.parseInt(id));
 
-                    e1 = new Empresa();
-
-                    e1.setId(Integer.parseInt(id));
                     e1.setNome(nome);
                     e1.setCnpj(cnpj);
                     e1.setTelefone(telefone);
-
                     dao.editar(e1);
 
                     List<Empresa> listaEdit = dao.listar();
@@ -77,15 +84,16 @@ public class EmpresaSrv extends HttpServlet {
 
                     rd = request.getRequestDispatcher("empresa.jsp");
                     rd.forward(request, response);
-
                     break;
 
                 case "exclusao":
 
                     e1 = new Empresa();
-                    e1.setId(Integer.parseInt(id));
 
-                    dao.excluir(e1);
+                    if (id != null) {
+                        e1.setId(Integer.parseInt(id));
+                        dao.excluir(e1);
+                    }
 
                     List<Empresa> listaExc = dao.listar();
                     request.setAttribute("listagem", listaExc);
@@ -98,12 +106,23 @@ public class EmpresaSrv extends HttpServlet {
                 case "listagem":
 
                     List<Empresa> lista = dao.listar();
-                    System.out.println("Tamanho da lista: " + lista.size());
                     request.setAttribute("listagem", lista);
 
                     rd = request.getRequestDispatcher("empresa.jsp");
                     rd.forward(request, response);
 
+                    break;
+
+                case "pesquisa":
+                    String nomeBusca = request.getParameter("busca");
+
+                    model.dao.EmpresaDao eDao = new model.dao.EmpresaDao();
+                    List<Empresa> resultado = eDao.pesquisarPorNome(nomeBusca);
+
+                    request.setAttribute("listagem", resultado);
+                    rd = request.getRequestDispatcher("empresa.jsp");
+                    rd.forward(request, response);
+                    
                     break;
 
                 default:
