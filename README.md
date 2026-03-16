@@ -71,22 +71,41 @@ http://localhost:8080/controle-de-estoque/
 ---
 
 ## 📁 Estrutura do Projeto
-
+ 
 ```
-controle-de-estoque/
-├── src/
-│   └── java/
-│       ├── controller/       # Servlets (EmpresaSrv, ProdutoSrv, MovimentacaoSrv)
-│       └── model/
-│           ├── dao/          # Classes de acesso ao banco de dados
-│           └── ...           # Entidades (Empresa, Produto, Movimentacao)
-├── web/
-│   ├── images/               # Imagens e fundo do sistema
-│   ├── index.html            # Página inicial
-│   ├── empresa.jsp           # Tela de empresas
-│   ├── produto.jsp           # Tela de produtos
-│   └── movimentacao.jsp      # Tela de movimentações
-└── README.md
+ControleDeEstoque-1.0/
+├── Web Pages/
+│   ├── META-INF/
+│   ├── WEB-INF/
+│   ├── images/                         # Imagens e fundo do sistema
+│   ├── index.html                      # Página inicial
+│   ├── empresa.jsp                     # Tela de empresas
+│   ├── produto.jsp                     # Tela de produtos
+│   └── movimentacao.jsp                # Tela de movimentações
+│
+├── Source Packages/
+│   ├── controller/
+│   │   ├── EmpresaSrv.java             # Servlet de empresas
+│   │   ├── MovimentacaoSrv.java        # Servlet de movimentações
+│   │   └── ProdutoSrv.java             # Servlet de produtos
+│   │
+│   ├── model/
+│   │   ├── Empresa.java                # Entidade Empresa
+│   │   ├── Movimentacao.java           # Entidade Movimentacao
+│   │   ├── Produto.java                # Entidade Produto
+│   │   └── TipoMovimentacao.java       # Enum ENTRADA / SAIDA
+│   │
+│   └── model.dao/
+│       ├── ConnFactory.java            # Conexão com o banco
+│       ├── DaoFactory.java             # Fábrica de DAOs
+│       ├── EmpresaDao.java             # CRUD de empresas
+│       ├── InterfaceDao.java           # Interface genérica DAO
+│       ├── MovimentacaoDao.java        # CRUD de movimentações
+│       └── ProdutoDao.java             # CRUD de produtos
+│
+└── src/main/resources/
+    └── META-INF/
+        └── persistence.xml             # Configuração JPA
 ```
 
 ---
