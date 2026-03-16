@@ -71,7 +71,7 @@ http://localhost:8080/controle-de-estoque/
 ---
 
 ## 📁 Estrutura do Projeto
- 
+
 ```
 ControleDeEstoque-1.0/
 ├── Web Pages/
@@ -103,9 +103,13 @@ ControleDeEstoque-1.0/
 │       ├── MovimentacaoDao.java        # CRUD de movimentações
 │       └── ProdutoDao.java             # CRUD de produtos
 │
-└── src/main/resources/
-    └── META-INF/
-        └── persistence.xml             # Configuração JPA
+├── src/main/resources/
+│   └── META-INF/
+│       └── persistence.xml             # Configuração JPA
+│
+└── Project Files/
+    ├── pom.xml                         # Dependências e build Maven
+    └── nb-configuration.xml            # Configurações do NetBeans
 ```
 
 ---
