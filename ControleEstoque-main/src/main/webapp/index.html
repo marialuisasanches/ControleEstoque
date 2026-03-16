@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Varela&display=swap"
+            rel="stylesheet"
+            />
+        <title>Controle de Estoque</title>
+    </head>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #dfd9e4;
+            font-family: "Roboto", sans-serif;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #260940;
+        }
+
+        img {
+            width: 150px;
+            height: auto;
+            padding: 1rem;
+            filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.8));
+        }
+
+        main {
+            color: #dfd9e4;
+            background-image: url(./images/fundo.png);
+            min-height: 74vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6rem;
+        }
+
+        button {
+            padding: 0;
+            background: none;
+            border: 1px solid #260940;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #260940;
+            color: #dfd9e4;
+            width: 300px;
+            height: 75px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            transition: transform 0.3s ease;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: #5d00ae;
+            border: 1px solid #5d00ae;
+            transform: scale(1.1);
+        }
+
+        footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #e4e1d9;
+            background-color: #260940;
+            padding: 1rem;
+        }
+    </style>
+
+    <body>
+        <header>
+            <img src="./images/ControleDeEstoqueIMG.png" />
+        </header>
+        <main>
+            <a href="produto?acao=listagem">
+                <button>Produto</button>
+            </a>
+
+            <a href="movimentacao?acao=listagem">
+                <button>Movimentação</button>
+            </a>
+
+            <a href="empresa?acao=listagem">
+                <button>Empresa</button>
+            </a>
+        </main>
+        <footer>
+            <p>&copy; 2026</p>
+            <p>Feito para fins Educacionais</p>
+        </footer>
+    </body>
+</html>
