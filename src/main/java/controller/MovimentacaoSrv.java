@@ -33,9 +33,15 @@ public class MovimentacaoSrv extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         try {
+            InterfaceDao dao = new MovimentacaoDao();
+            RequestDispatcher rd;
+            Movimentacao m1 = null;
+            Produto p1 = null;
+            TipoMovimentacao tipoMov;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dataMov = null;
 
             String acao = request.getParameter("acao");
-
             if (acao == null) {
                 acao = "listagem";
             }
@@ -47,20 +53,13 @@ public class MovimentacaoSrv extends HttpServlet {
             String produto = request.getParameter("produtoMovimento");
             String tipo = request.getParameter("tipo");
 
-            InterfaceDao dao = new MovimentacaoDao();
-            RequestDispatcher rd;
-
-            Movimentacao m1 = null;
-            Produto p1 = null;
-            TipoMovimentacao tipoMov;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date dataMov;
+            if ((acao.equals("inclusao") || acao.equals("edicao")) && data != null && !data.isEmpty()) {
+                dataMov = sdf.parse(data);
+            }
 
             switch (acao) {
 
                 case "inclusao":
-                    dataMov = sdf.parse(data);
-
                     m1 = new Movimentacao();
                     m1.setQtd(Integer.parseInt(qtd));
                     m1.setObservacao(observacao);
@@ -101,8 +100,6 @@ public class MovimentacaoSrv extends HttpServlet {
                     break;
 
                 case "edicao":
-                    dataMov = sdf.parse(data);
-
                     Movimentacao movAntiga = (Movimentacao) dao.pesquisarPorId(Integer.parseInt(id));
                     int qtdAntiga = movAntiga.getQtd();
                     TipoMovimentacao tipoAntigo = movAntiga.getTipo();
