@@ -240,6 +240,14 @@
             font-size: 0.8rem;
             font-weight: 600;
         }
+        .obs-cell {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-style: italic;
+    opacity: 0.85;
+}
 
         footer {
             display: flex;
@@ -330,6 +338,7 @@
                                 <th>Quantidade</th>
                                 <th>Data</th>
                                 <th>Saldo Atual</th>
+                                <th>Observa&#231;&#227;o</th>
                                 <th>A&#231;&#245;es</th>
                             </tr>
                         </thead>
@@ -358,6 +367,16 @@
                                             <td>${mov.qtd}</td>
                                             <td>${mov.data}</td>
                                             <td>${mov.saldoMomento}</td>
+                                            <td class="obs-cell" title="${mov.observacao}">
+    <c:choose>
+        <c:when test="${not empty mov.observacao}">
+            ${mov.observacao}
+        </c:when>
+        <c:otherwise>
+            <span style="opacity:0.4;">—</span>
+        </c:otherwise>
+    </c:choose>
+</td>
                                             <td>
                                                 <a href="movimentacao?acao=pre-edicao&id=${mov.id}" style="color:#00bcd4;">Editar</a>
                                                 &nbsp;|&nbsp;
@@ -381,3 +400,4 @@
         </footer>
     </body>
 </html>
+    

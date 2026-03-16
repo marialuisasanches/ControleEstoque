@@ -58,36 +58,44 @@ public class MovimentacaoSrv extends HttpServlet {
 
             switch (acao) {
 
-                case "inclusao":
-                    dataMov = sdf.parse(data);
+case "inclusao":
+    dataMov = sdf.parse(data);
 
-                    m1 = new Movimentacao();
-                    m1.setQtd(Integer.parseInt(qtd));
-                    m1.setObservacao(observacao);
-                    m1.setData(dataMov);
+    m1 = new Movimentacao();
+    m1.setQtd(Integer.parseInt(qtd));
+    m1.setObservacao(observacao);
+    m1.setData(dataMov);
 
-                    tipoMov = TipoMovimentacao.valueOf(tipo);
-                    m1.setTipo(tipoMov);
+    tipoMov = TipoMovimentacao.valueOf(tipo);
+    m1.setTipo(tipoMov);
 
-                    model.dao.ProdutoDao pDao = new model.dao.ProdutoDao();
-                    p1 = pDao.pesquisarPorId(Integer.parseInt(produto));
+    model.dao.ProdutoDao pDao = new model.dao.ProdutoDao();
+    p1 = pDao.pesquisarPorId(Integer.parseInt(produto));
 
-                    if (tipoMov == TipoMovimentacao.ENTRADA) {
-                        p1.setEstoque(p1.getEstoque() + m1.getQtd());
-                    } else {
-                        p1.setEstoque(p1.getEstoque() - m1.getQtd());
-                    }
+    if (tipoMov == TipoMovimentacao.SAIDA && p1.getEstoque() < Integer.parseInt(qtd)) {
+        request.setAttribute("erro", "Estoque insuficiente! Saldo atual: " + p1.getEstoque());
+        request.setAttribute("listagem", dao.listar());
+        request.setAttribute("produtosDisponiveis", pDao.listar());
+        rd = request.getRequestDispatcher("movimentacao.jsp");
+        rd.forward(request, response);
+        break;
+    }
 
-                    m1.setSaldoMomento(p1.getEstoque());
-                    m1.setProdutoMovimento(p1);
+    if (tipoMov == TipoMovimentacao.ENTRADA) {
+        p1.setEstoque(p1.getEstoque() + m1.getQtd());
+    } else {
+        p1.setEstoque(p1.getEstoque() - m1.getQtd());
+    }
 
-                    dao.incluir(m1);
-                    pDao.editar(p1);
+    m1.setSaldoMomento(p1.getEstoque());
+    m1.setProdutoMovimento(p1);
 
-                    rd = request.getRequestDispatcher("movimentacao?acao=listagem");
-                    rd.forward(request, response);
+    dao.incluir(m1);
+    pDao.editar(p1);
 
-                    break;
+    rd = request.getRequestDispatcher("movimentacao?acao=listagem");
+    rd.forward(request, response);
+    break;
 
                 case "pre-edicao":
                     String idPre = request.getParameter("id");
@@ -100,47 +108,58 @@ public class MovimentacaoSrv extends HttpServlet {
                     rd.forward(request, response);
                     break;
 
-                case "edicao":
-                    dataMov = sdf.parse(data);
+               case "edicao":
+    dataMov = sdf.parse(data);
 
-                    Movimentacao movAntiga = (Movimentacao) dao.pesquisarPorId(Integer.parseInt(id));
-                    int qtdAntiga = movAntiga.getQtd();
-                    TipoMovimentacao tipoAntigo = movAntiga.getTipo();
+    Movimentacao movAntiga = (Movimentacao) dao.pesquisarPorId(Integer.parseInt(id));
+    int qtdAntiga = movAntiga.getQtd();
+    TipoMovimentacao tipoAntigo = movAntiga.getTipo();
 
-                    model.dao.ProdutoDao pDaoEd = new model.dao.ProdutoDao();
-                    p1 = pDaoEd.pesquisarPorId(Integer.parseInt(produto));
+    model.dao.ProdutoDao pDaoEd = new model.dao.ProdutoDao();
+    p1 = pDaoEd.pesquisarPorId(Integer.parseInt(produto));
 
-                    if (tipoAntigo == TipoMovimentacao.ENTRADA) {
-                        p1.setEstoque(p1.getEstoque() - qtdAntiga);
-                    } else {
-                        p1.setEstoque(p1.getEstoque() + qtdAntiga);
-                    }
+    // 1) Reverte o efeito da movimentação antiga
+    if (tipoAntigo == TipoMovimentacao.ENTRADA) {
+        p1.setEstoque(p1.getEstoque() - qtdAntiga);
+    } else {
+        p1.setEstoque(p1.getEstoque() + qtdAntiga);
+    }
 
-                    int qtdNova = Integer.parseInt(qtd);
-                    TipoMovimentacao tipoNovo = TipoMovimentacao.valueOf(tipo);
+    int qtdNova = Integer.parseInt(qtd);
+    TipoMovimentacao tipoNovo = TipoMovimentacao.valueOf(tipo);
 
-                    if (tipoNovo == TipoMovimentacao.ENTRADA) {
-                        p1.setEstoque(p1.getEstoque() + qtdNova);
-                    } else {
-                        p1.setEstoque(p1.getEstoque() - qtdNova);
-                    }
+    // ✅ 2) Verifica ANTES de aplicar o novo
+    if (tipoNovo == TipoMovimentacao.SAIDA && p1.getEstoque() < qtdNova) {
+        request.setAttribute("erro", "Estoque insuficiente! Saldo atual: " + p1.getEstoque());
+        request.setAttribute("listagem", dao.listar());
+        request.setAttribute("produtosDisponiveis", pDaoEd.listar());
+        rd = request.getRequestDispatcher("movimentacao.jsp");
+        rd.forward(request, response);
+        break;
+    }
 
-                    movAntiga.setQtd(qtdNova);
-                    movAntiga.setTipo(tipoNovo);
-                    movAntiga.setData(dataMov);
-                    movAntiga.setObservacao(observacao);
-                    movAntiga.setProdutoMovimento(p1);
+    // 3) Aplica o novo tipo
+    if (tipoNovo == TipoMovimentacao.ENTRADA) {
+        p1.setEstoque(p1.getEstoque() + qtdNova);
+    } else {
+        p1.setEstoque(p1.getEstoque() - qtdNova);
+    }
 
-                    movAntiga.setSaldoMomento(p1.getEstoque());
+    movAntiga.setQtd(qtdNova);
+    movAntiga.setTipo(tipoNovo);
+    movAntiga.setData(dataMov);
+    movAntiga.setObservacao(observacao);
+    movAntiga.setProdutoMovimento(p1);
+    movAntiga.setSaldoMomento(p1.getEstoque());
 
-                    dao.editar(movAntiga);
-                    pDaoEd.editar(p1);
+    dao.editar(movAntiga);
+    pDaoEd.editar(p1);
 
-                    request.setAttribute("listagem", dao.listar());
-                    request.setAttribute("produtosDisponiveis", pDaoEd.listar());
-                    rd = request.getRequestDispatcher("movimentacao.jsp");
-                    rd.forward(request, response);
-                    break;
+    request.setAttribute("listagem", dao.listar());
+    request.setAttribute("produtosDisponiveis", pDaoEd.listar());
+    rd = request.getRequestDispatcher("movimentacao.jsp");
+    rd.forward(request, response);
+    break;
 
                 case "exclusao":
                     m1 = (Movimentacao) dao.pesquisarPorId(Integer.parseInt(id));
